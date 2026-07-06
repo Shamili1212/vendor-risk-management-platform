@@ -13,6 +13,15 @@ node_modules/
 dist/
 build/
 .vite/
+*.tsbuildinfo
+
+# .NET
+bin/
+obj/
+TestResults/
+
+# C build outputs
+risk-engine/bin/
 
 # VS Code
 .vscode/

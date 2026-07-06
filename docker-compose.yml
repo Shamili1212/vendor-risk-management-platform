@@ -19,5 +19,36 @@ services:
     ports:
       - "6379:6379"
 
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: vendor_risk_api
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=vendor_risk_db;Username=vendor_user;Password=vendor_password
+      Jwt__Issuer: VendorRisk
+      Jwt__Audience: VendorRisk.Client
+      Jwt__Key: local-development-key-change-before-production-12345
+      Frontend__Origin: http://localhost:5173
+      RiskEngine__Path: /app/risk_engine
+      Database__EnsureCreatedOnStartup: "true"
+    ports:
+      - "5000:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vendor_risk_frontend
+    depends_on:
+      - api
+    environment:
+      VITE_API_BASE_URL: http://localhost:5000
+    ports:
+      - "5173:5173"
+
 volumes:
   postgres_data:
